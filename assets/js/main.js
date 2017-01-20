@@ -234,7 +234,7 @@ function genInfoCardHistory(tweetData) {
 		var contentString = `
 		<div id="content">
    			<div id="siteNotice"></div>
-   			<h1 id="firstHeading" class="firstHeading"><img src = "${tweetData.user.profile_image_url}" /> ${tweetData.user.name}</h1>
+   			<h1 id="firstHeading" class="firstHeading"><img src = "${tweetData.user.profile_image_url_https}" /> ${tweetData.user.name}</h1>
    			<div id="bodyContent">
       			<p>
       				${tweetData.text}
@@ -254,7 +254,7 @@ function genInfoCardHistory(tweetData) {
 		  position: new google.maps.LatLng(tweetData.lat, tweetData.lng),
 		  title: 'Multi Marker',
 		  // icon: 'assets/images/twitter-icon-40x40.png'
-		  icon: tweetData.user.profile_image_url
+		  icon: tweetData.user.profile_image_url_https
 		});
 
 		marker.addListener('click', function() {
