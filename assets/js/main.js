@@ -402,6 +402,7 @@ function cacheSetting() {
 	}
 
 	var cacheTimeNew = prompt("Config cache time (minute) : ", cacheTime);
+	cacheTimeNew = (cacheTimeNew) ? cacheTimeNew : cacheTime;
 	cacheTime = parseInt(cacheTimeNew);
 	$("#cache_time").val(cacheTime); // Cache Config 60 minute
 }
