@@ -5,8 +5,13 @@ var marker;
 var circle;
 var multi_marker = [];
 var multi_infowindow = [];
-var obj = [];
-localStorage.setItem('tweetStorage', JSON.stringify(obj));
+
+if ( localStorage.getItem('tweetStorage') === null ) {
+
+	var obj = [];
+	localStorage.setItem('tweetStorage', JSON.stringify(obj));
+}
+
 // INI GLOBAL VARIABLE
 
 $(document).ready(function() {
@@ -25,7 +30,7 @@ $(document).ready(function() {
 	    getTwitterResult(result); // FIRST CALL WHEN LOAD PAGE
 
 	    // LISTEN GOOGLE EVENT
-	    google.maps.event.addListener(map, 'center_changed', function() { circle.setMap(null); genRadius(); } );
+	    google.maps.event.addListener(map, 'center_changed', function() { } );
 	    google.maps.event.addListener(map, 'dragend', function() { console.info('dragend'); getTwitterResult(result); geocodeLatLng(); } );
 	    google.maps.event.addListener(map, 'zoom_changed', function() { console.info('zoom_changed'); getTwitterResult(result); geocodeLatLng(); } );
 	    google.maps.event.addListener(map, 'click', function() { closeAllInfo(); });
@@ -128,8 +133,6 @@ function initMap() {
       map.fitBounds(bounds);
 
     });
-
-    genRadius();
   }
 
 function genRadius() {
@@ -197,7 +200,7 @@ function genInfoCard(tweetData) {
 	var marker = new google.maps.Marker({
 	  map: map,
 	  position: new google.maps.LatLng(map.getCenter().lat()+randLAT, map.getCenter().lng()+randLNG),
-	  title: 'Multi Marker',
+	  title: tweetData.text,
 	  // icon: 'assets/images/twitter-icon-40x40.png'
 	  icon: tweetData.user.profile_image_url_https
 	});
@@ -215,6 +218,8 @@ function genInfoCard(tweetData) {
 	tweetData.lat = map.getCenter().lat()+randLAT;
 	tweetData.lng = map.getCenter().lng()+randLNG;
 
+	tweetData.timeCache = new Date();
+
 	var obj = JSON.parse(localStorage.getItem('tweetStorage'));
 	obj.push(tweetData);
 	localStorage.setItem('tweetStorage', JSON.stringify(obj));
@@ -229,7 +234,15 @@ function genInfoCardHistory(tweetData) {
 	// HISTORY
 	// ******************************** //
 
-	if ( tweetData.lat < map.getCenter().lat()+0.4116 && tweetData.lat > map.getCenter().lat()-0.4116 && tweetData.lng < map.getCenter().lng()+0.4116 && tweetData.lng > map.getCenter().lng()-0.4116 ) {
+	// After 1 Hour Not Show Tweet Cache
+
+	var now = new Date();
+	var tweetTime = new Date(tweetData.timeCache);
+
+	var second =  Math.floor(((now-tweetTime)/1000));
+	var minute = second / 60;
+
+	if ( tweetData.lat < map.getCenter().lat()+0.4116 && tweetData.lat > map.getCenter().lat()-0.4116 && tweetData.lng < map.getCenter().lng()+0.4116 && tweetData.lng > map.getCenter().lng()-0.4116 && minute < 60 ) {
 
 		var contentString = `
 		<div id="content">
