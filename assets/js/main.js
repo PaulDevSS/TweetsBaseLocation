@@ -1,3 +1,5 @@
+
+// INI GLOBAL VARIABLE
 var map;
 var marker;
 var circle;
@@ -5,6 +7,7 @@ var multi_marker = [];
 var multi_infowindow = [];
 var obj = [];
 localStorage.setItem('tweetStorage', JSON.stringify(obj));
+// INI GLOBAL VARIABLE
 
 $(document).ready(function() {
 	
@@ -19,13 +22,16 @@ $(document).ready(function() {
 	    // console.log(result);
 	    // do some stuff with result
 
-	    getTwitterResult(result);
+	    getTwitterResult(result); // FIRST CALL WHEN LOAD PAGE
+
+	    // LISTEN GOOGLE EVENT
 	    google.maps.event.addListener(map, 'center_changed', function() { circle.setMap(null); genRadius(); } );
 	    google.maps.event.addListener(map, 'dragend', function() { console.info('dragend'); getTwitterResult(result); geocodeLatLng(); } );
 	    google.maps.event.addListener(map, 'zoom_changed', function() { console.info('zoom_changed'); getTwitterResult(result); geocodeLatLng(); } );
 	    google.maps.event.addListener(map, 'click', function() { closeAllInfo(); });
+	    // LISTEN GOOGLE EVENT
 
-	    setTimeout(function() { $(".alert").fadeOut(300); }, 10000);
+	    setTimeout(function() { $(".alert").fadeOut(300); }, 10000); // HIDE WARNING BOX
 
 	})
 	.fail(function (err) {
@@ -38,7 +44,7 @@ $(document).ready(function() {
 
 function getTwitterResult(result) {
 
-	var fetch_status = $('#fetch_status').val();
+	var fetch_status = $('#fetch_status').val(); // CHECK STATUS FETCH DATA ON LIVE OR HISTORY
 
 	if ( fetch_status == "on" ) {
 
@@ -46,7 +52,7 @@ function getTwitterResult(result) {
 
 		// $(".tweet").empty();
 		
-		result.get('https://api.twitter.com/1.1/search/tweets.json?geocode='+map.getCenter().lat()+','+map.getCenter().lng()+',50mi')
+		result.get('https://api.twitter.com/1.1/search/tweets.json?geocode='+map.getCenter().lat()+','+map.getCenter().lng()+',50mi') // GET API CALL TO TWITTER
 	    .done(function (response) {
 
 	        console.info("Pull Tweet Success");
@@ -58,8 +64,7 @@ function getTwitterResult(result) {
 	        	 /* iterate through array or object */
 
 	        	 // $(".tweet").append('<img src = "'+val.user.profile_image_url+'" />'+val.created_at+" : "+val.text+"<br />");
-
-	        	 genInfoCard(val);
+	        	 genInfoCard(val); // CREATE INFO WINDOW (Google Map)
 
 	        });
 
@@ -71,11 +76,15 @@ function getTwitterResult(result) {
 	}
 	else {
 
-		showHistory();
+		showHistory(); // FETCH DATA FROM HISTORY
 	}
 }
 
 function initMap() {
+
+	// ******************** //
+	// INI MAP & SEARCH BOX //
+	// ******************** //
     
     //Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
@@ -125,6 +134,10 @@ function initMap() {
 
 function genRadius() {
 
+	// ******************** //
+	// MAKE CENTER RADIUS   //
+	// ******************** //
+
 	// console.log(map.getCenter().lat(), map.getCenter().lng());
 	// $("#coordinate").text(map.getCenter().lat()+","+map.getCenter().lng());
 	// marker.setMap(null);
@@ -149,6 +162,10 @@ function genRadius() {
 }
 
 function genInfoCard(tweetData) {
+
+	// ******************************** //
+	// GENERATE INFO CARD AROUND RADIUS //
+	// ******************************** //
 	
 	var contentString = `
 	<div id="content">
@@ -174,6 +191,9 @@ function genInfoCard(tweetData) {
 	var randLNG = randomIntFromInterval(-4116, 4116);
 	randLNG = randLNG / 10000;
 
+
+	// MARKER CREATE
+
 	var marker = new google.maps.Marker({
 	  map: map,
 	  position: new google.maps.LatLng(map.getCenter().lat()+randLAT, map.getCenter().lng()+randLNG),
@@ -190,7 +210,7 @@ function genInfoCard(tweetData) {
 	multi_marker.push(marker);
 	multi_infowindow.push(infowindow);
 
-	// Storage
+	// Storage Tweet Data
 
 	tweetData.lat = map.getCenter().lat()+randLAT;
 	tweetData.lng = map.getCenter().lng()+randLNG;
@@ -198,10 +218,16 @@ function genInfoCard(tweetData) {
 	var obj = JSON.parse(localStorage.getItem('tweetStorage'));
 	obj.push(tweetData);
 	localStorage.setItem('tweetStorage', JSON.stringify(obj));
-	// Storage
+
+	// Storage Tweet Data
 }
 
 function genInfoCardHistory(tweetData) {
+
+	// ******************************** //
+	// GENERATE INFO CARD AROUND RADIUS //
+	// HISTORY
+	// ******************************** //
 
 	if ( tweetData.lat < map.getCenter().lat()+0.4116 && tweetData.lat > map.getCenter().lat()-0.4116 && tweetData.lng < map.getCenter().lng()+0.4116 && tweetData.lng > map.getCenter().lng()-0.4116 ) {
 
@@ -242,6 +268,8 @@ function genInfoCardHistory(tweetData) {
 }
 
 function showHistory() {
+
+	// FETCH HISTORY FROM CACHE STORAGE
 	
 	var obj = JSON.parse(localStorage.getItem('tweetStorage'));
 	// console.log(obj);
@@ -255,6 +283,8 @@ function showHistory() {
 }
 
 $('#liveHistoryBTN').on('click', function() {
+
+	// LIVE, HISTORY BUTTON HANDLE
 
 	if ( $(this).text() == "HISTORY" ) {
 
@@ -285,6 +315,8 @@ $('#liveHistoryBTN').on('click', function() {
 
 function closeAllInfo() {
 
+	// CLOSE ALL INFO WINDOW
+
 	if ( multi_infowindow.length  ) {
 
 		for (var i = 0; i < multi_infowindow.length; i++) {
@@ -295,6 +327,8 @@ function closeAllInfo() {
 }
 
 function cleanMarker() {
+
+	// CLEAR ALL MARKER ON MAP
 	
 	if ( multi_marker.length  ) {
 
@@ -308,6 +342,10 @@ function cleanMarker() {
 }
 
 function geocodeLatLng() {
+
+	// ***************************************** //
+	// FIND LOCATION NAME BY LAT & LONG TITUDE   //
+	// ***************************************** //
 
     var latlng = {lat: parseFloat(map.getCenter().lat()), lng: parseFloat(map.getCenter().lng())};
 
@@ -336,28 +374,6 @@ function geocodeLatLng() {
 function randomIntFromInterval(min,max) {
 
     return Math.floor(Math.random()*(max-min+1)+min);
-}
-
-
-function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2-lat1);  // deg2rad below
-  var dLon = deg2rad(lon2-lon1); 
-  var a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-    ; 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  var d = R * c; // Distance in km
-  
-  return d;
-}
-
-function deg2rad(deg) {
-
-  return deg * (Math.PI/180)
 }
 
 // google.maps.event.addListener(map, 'bounds_changed', function() { console.info('bounds_changed'); } );
