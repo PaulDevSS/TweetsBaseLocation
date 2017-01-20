@@ -299,28 +299,28 @@ $('#liveHistoryBTN').on('click', function() {
 
 	// LIVE, HISTORY BUTTON HANDLE
 
-	if ( $(this).text() == "HISTORY" ) {
+	if ( $(this).text() == "HISTORY MODE" ) {
 
 		showHistory();
-		$(this).text('LIVE');
+		$(this).text('LIVE MODE');
 		$(this).addClass('btn-success');
 		$(this).removeClass('btn-primary');
 		$('#fetch_status').val('off');
 		$('#statusColor').addClass('text-default');
 		$('#statusColor').removeClass('text-danger');
 		$('#statusColor').removeClass('blink');
-		$('#statusColor').attr("title", "HISTORY");
+		$('#statusColor').attr("title", "HISTORY MODE");
 	}
 	else {
 
-		$(this).text('HISTORY');
+		$(this).text('HISTORY MODE');
 		$(this).addClass('btn-primary');
 		$(this).removeClass('btn-success');
 		$('#fetch_status').val('on');
 		$('#statusColor').addClass('text-danger');
 		$('#statusColor').removeClass('text-default');
 		$('#statusColor').addClass('blink');
-		$('#statusColor').attr("title", "LIVE");
+		$('#statusColor').attr("title", "LIVE MODE");
 
 		map.setZoom(9);
 	}
