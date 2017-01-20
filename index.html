@@ -10,6 +10,7 @@
 	<link href="assets/css/bootswatch-sanstone.css" rel="stylesheet" crossorigin="anonymous">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 	<link href="assets/css/main.css" rel="stylesheet" crossorigin="anonymous">
+	<link href="assets/css/switch.css" rel="stylesheet" crossorigin="anonymous">
 
 	<!-- LOAD STYLESHEET -->
 
@@ -56,10 +57,12 @@
 
 		<div class="row">
 			
-			<div class="col-md-8"><input id="pac-input" class="controls form-control" type="text" placeholder="Search Box"></div>
+			<div class="col-md-6"><input id="pac-input" class="controls form-control" type="text" placeholder="Search Box"></div>
 			<div class="col-md-4"><button class="btn btn-block btn-primary" id="liveHistoryBTN">HISTORY MODE</button></div>
+			<div class="col-md-2"><button class="btn btn-block btn-primary" id="cacheSetting" onclick="javascript:cacheSetting();">CACHE SETTING</button></div>
 
 			<input type="hidden" id="fetch_status" value="on">
+			<input type="hidden" id="cache_time" value="60">
 
 		</div>
 

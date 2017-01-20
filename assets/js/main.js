@@ -5,6 +5,8 @@ var marker;
 var circle;
 var multi_marker = [];
 var multi_infowindow = [];
+var cacheTime = $("#cache_time").val(); // Cache Config 60 minute
+cacheTime = parseInt(cacheTime);
 
 if ( localStorage.getItem('tweetStorage') === null ) {
 
@@ -242,7 +244,7 @@ function genInfoCardHistory(tweetData) {
 	var second =  Math.floor(((now-tweetTime)/1000));
 	var minute = second / 60;
 
-	if ( tweetData.lat < map.getCenter().lat()+0.4116 && tweetData.lat > map.getCenter().lat()-0.4116 && tweetData.lng < map.getCenter().lng()+0.4116 && tweetData.lng > map.getCenter().lng()-0.4116 && minute < 60 ) {
+	if ( tweetData.lat < map.getCenter().lat()+0.4116 && tweetData.lat > map.getCenter().lat()-0.4116 && tweetData.lng < map.getCenter().lng()+0.4116 && tweetData.lng > map.getCenter().lng()-0.4116 && minute < cacheTime ) {
 
 		var contentString = `
 		<div id="content">
@@ -387,6 +389,21 @@ function geocodeLatLng() {
 function randomIntFromInterval(min,max) {
 
     return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+function cacheSetting() {
+
+	var obj = JSON.parse(localStorage.getItem('tweetStorage'));
+	
+	if ( confirm("Your cache tweets size : "+obj.length+" record.\nYou want to clear cache or not?\n\ninfo : Too many tweets cache will make your application slowly.") ) {
+
+		var obj = [];
+		localStorage.setItem('tweetStorage', JSON.stringify(obj));
+	}
+
+	var cacheTimeNew = prompt("Config cache time (minute) : ", cacheTime);
+	cacheTime = parseInt(cacheTimeNew);
+	$("#cache_time").val(cacheTime); // Cache Config 60 minute
 }
 
 // google.maps.event.addListener(map, 'bounds_changed', function() { console.info('bounds_changed'); } );
